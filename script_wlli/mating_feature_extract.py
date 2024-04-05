@@ -68,9 +68,11 @@ def extract_mating_features(image, g, key: int, granularity: int = 10):
 
 
 def stack_features(all_data: dict = {}, data: dict = {}, name: str = ""):
-    for key, v in data.items():
-        if key not in all_data.keys():
-            all_data[key] = None
+    for key in data.keys():
+        if not data[key].empty:
             data[key]["image"] = os.path.basename(name)
-        all_data[key] = pd.concat([all_data[key], data[key]])
+            if key not in all_data.keys():
+                all_data[key] = data[key]
+            else:
+                all_data[key] = pd.concat([all_data[key], data[key]])
     return all_data
