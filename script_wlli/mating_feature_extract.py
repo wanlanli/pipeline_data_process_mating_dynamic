@@ -67,12 +67,54 @@ def extract_mating_features(image, g, key: int, granularity: int = 10):
     return feature_time_point
 
 
-def stack_features(all_data: dict = {}, data: dict = {}, name: str = ""):
+def stack_features(all_data: dict = {}, data: dict = {}, name: str = "",  config=None):
     for key in data.keys():
         if not data[key].empty:
             data[key]["image"] = os.path.basename(name)
+            if config is not None:
+                data[key] = set_image_resolution_from_config(config, data[key])
             if key not in all_data.keys():
                 all_data[key] = data[key]
             else:
                 all_data[key] = pd.concat([all_data[key], data[key]])
     return all_data
+
+
+def set_image_resolution_from_config(config, data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Updates a DataFrame containing image features with resolution and binning information
+    for each image, based on configurations provided. This function is essential for experiments
+    involving images from multiple sources or resolutions, as it allows for the normalization of
+    image metrics such as area and length by setting correct resolution parameters.
+
+    Parameters:
+    ----------
+    config : object
+        A configuration object that includes resolution settings for each image. This object
+        should have an attribute `image_options.resolution`, which is a dictionary where each
+        key corresponds to a part of the image file name and each value is another dictionary
+        with "reso" (resolution) and "bin" (binning) information.
+
+    data : pd.DataFrame
+        The DataFrame containing features extracted from images.
+
+    Returns:
+    --------
+    pd.DataFrame
+        The updated DataFrame with two new columns: 'resolution' and 'bin', containing the
+        resolution and binning information for each image. These columns are added or updated
+        based on the matches found between the image file names in the DataFrame and the keys
+        in the `config.image_options.resolution` dictionary.
+
+    Example:
+    --------
+    Assuming `data` has an 'image' column with values like 'experiment1_day1.tif', and
+    `config.image_options.resolution` contains {'experiment1': {'reso': 0.5, 'bin': 2}},
+    this function will add/update the 'resolution' and 'bin' columns in `data` for rows where
+    the 'image' value contains 'experiment1'.
+    """
+    for k, v in config.image_options.resolution.items():
+        index = data.image.str.contains(pat=k, regex=False)
+        data.loc[index, "resolution"] = v["reso"]
+        data.loc[index, "bin"] = v["bin"]
+    return data
