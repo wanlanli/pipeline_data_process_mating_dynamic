@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def node_color(nodes, key: int = 0, m: int = 0, p: int = 0):
+def node_color(nodes, key: int = 0, p: int = 0, m: int = 0):
     node_color = []
     for n in nodes:
         if n == key:
@@ -25,7 +25,7 @@ def draw_subgraph(g, key, p, m):
     subgraph = nx.subgraph(undirected_g, nodes)
     pos = nx.bfs_layout(subgraph, start=key)
     subgraph_directed = nx.subgraph(g, nodes)
-    node_colors = node_color(nodes, key, p, m)
+    node_colors = node_color(list(subgraph_directed.nodes), key, p, m)
     nx.draw(subgraph_directed, with_labels=True,
             pos=pos, font_weight='bold',
             node_color=node_colors, node_size=500, ax=ax)
@@ -61,17 +61,22 @@ def show_quantification(c_mating, data, id, time, ax=None):
 
     for key in p_s:
         node_center = (c_mating.cells[key].center(frame=time)[0]).astype(np.float_)
-        ax.scatter(node_center[1], node_center[0], marker="x", c='g')
+        ax.scatter(node_center[1]+1, node_center[0]+1, marker="x", c='g')
+        ax.text(node_center[1], node_center[0], key, c='g')
 
     for key in p_d:
         node_center = (c_mating.cells[key].center(frame=time)[0]).astype(np.float_)
-        ax.scatter(node_center[1], node_center[0], marker="x", c='r')
+        ax.scatter(node_center[1]+1, node_center[0]+1, marker="x", c='r')
+        ax.text(node_center[1], node_center[0], key, c='r')
 
     for key in m_s:
         node_center = (c_mating.cells[key].center(frame=time)[0]).astype(np.float_)
-        ax.scatter(node_center[1], node_center[0], marker="*", c='r')
+        ax.scatter(node_center[1]-1, node_center[0]-1, marker="*", c='r')
+        ax.text(node_center[1], node_center[0], key, c='r')
 
     for key in m_d:
         node_center = (c_mating.cells[key].center(frame=time)[0]).astype(np.float_)
-        ax.scatter(node_center[1], node_center[0], marker="*", c='g')
-    print("angle p: ", p_dgree, "\nangle m: ", m_dgree)
+        ax.scatter(node_center[1]-1, node_center[0]-1, marker="*", c='g')
+        ax.text(node_center[1], node_center[0], key, c='g')
+    print("angle p: ", p_dgree, ep_data.p_angle_index,
+          "\nangle m: ", m_dgree, ep_data.m_angle_index)
