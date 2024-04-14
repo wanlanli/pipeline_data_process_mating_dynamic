@@ -27,7 +27,8 @@ def draw_subgraph(g, key, p, m):
     subgraph_directed = nx.subgraph(g, nodes)
     node_colors = node_color(list(subgraph_directed.nodes), key, p, m)
     nx.draw(subgraph_directed, with_labels=True,
-            pos=pos, font_weight='bold',
+            pos=pos,
+            font_weight='bold',
             node_color=node_colors, node_size=500, ax=ax)
 
 
