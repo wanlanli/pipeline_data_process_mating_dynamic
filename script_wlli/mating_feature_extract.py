@@ -55,22 +55,11 @@ def extract_mating_features(image, g, key: int, granularity: int = 10):
     for flag, time in enumerate(range(end_time, start_time, -granularity)):
         feature_time_point = __set_single_time_point_feature(c_mating, feature_time_point,
                                                              time, '-'+str(flag))
-        # data = c_mating.center_cells_potential_pairs(time)
-        # if data is not None:
-        #     if '-'+str(flag) not in feature_time_point.keys():
-        #         feature_time_point['-'+str(flag)] = None
-        #     feature_time_point['-'+str(flag)] = pd.concat([feature_time_point['-'+str(flag)], data])
-
-    # data = c_mating.center_cells_potential_pairs(start_time)
-    # if data is not None:
-    #     if 'start' not in feature_time_point.keys():
-    #         feature_time_point['start'] = None
-    #     feature_time_point["start"] = pd.concat([feature_time_point["start"], data])
     feature_time_point = __set_single_time_point_feature(c_mating, feature_time_point,
                                                          cells[c_mating.p].start, "start_p")
     feature_time_point = __set_single_time_point_feature(c_mating, feature_time_point,
                                                          cells[c_mating.m].start, "start_m")
-    return feature_time_point
+    return c_mating, feature_time_point
 
 
 def __set_single_time_point_feature(c_mating, stack, start_time, name):
