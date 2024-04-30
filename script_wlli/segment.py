@@ -125,8 +125,8 @@ def segment(model, image, channel=0, start: int = 0, end: int = None):
         segmentation = __single_image_segment(model, image)
     elif image.ndim == 3:
         if channel != 0:
-            image = np.movaxis(image, channel, 0)
-            segmentation = np.zeros(image.shape, dtype="uint16")
+            image = np.moveaxis(image, channel, 0)
+        segmentation = np.zeros(image.shape, dtype="uint16")
         if end is None:
             end = image.shape[0]
         for f in trange(start, end):
