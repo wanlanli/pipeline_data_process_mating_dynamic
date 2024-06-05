@@ -11,7 +11,7 @@ from deepYeast.deeplab.postprocess.post_process_utils import post_process_panopt
 
 def load_segment_model(model_dir: str = os.path.abspath("../deepYeast/model/v_1.0.0/checkpoint/"),
                        num_gpus: int = 0,
-                       config_path: str = os.path.abspath("../deepYeast/deeplab/configs/config_wl.yaml")):
+                       config_path: str = os.path.abspath("../deepYeast/deeplab/configs/config_wd.yaml")):
     """
     Loads a segmentation model from a specified directory, configuring it based on a given YAML configuration file.
     This function is specifically tailored for deep learning models, potentially supporting GPU acceleration if
@@ -123,6 +123,7 @@ def segment(model, image, channel=0, start: int = 0, end: int = None):
     """
     if image.ndim == 2:
         segmentation = __single_image_segment(model, image)
+        return segmentation
     elif image.ndim == 3:
         if channel != 0:
             image = np.moveaxis(image, channel, 0)
